@@ -13,7 +13,13 @@ def get_real_distance(start , end ,data):
     #Great-Circle-Distance Formula Used in Google Maps
     d = 2 * R * math.asin(math.sqrt(math.sin(difflat/2)*math.sin(difflat/2)+math.cos(rlat1)*math.cos(rlat2)*math.sin(difflon/2)*math.sin(difflon/2)))
     return d
-def A_star(visited, queue, real_distance, graph, src, dist):
+
+def A_star( src, dist):
+    visited = []
+    queue = PriorityQueue()
+
+    graph = Data.GRAPH 
+    real_distance =Data.Coordinates
     parent={}
     parent[src]="non"
     queue.put((0, src,"non"))
@@ -34,7 +40,7 @@ def A_star(visited, queue, real_distance, graph, src, dist):
                 actual_dis[child] = actual_dis[node[1]] + graph[node[1]][child]
                 queue.put(((actual_dis[child]+get_real_distance(child,src,real_distance)),child,node[1]))
     actual_path=[] 
-    currNode=distnation
+    currNode=dist
     while currNode != "non":
         actual_path.append(currNode)
         currNode=parent[currNode]
@@ -42,14 +48,3 @@ def A_star(visited, queue, real_distance, graph, src, dist):
     return actual_path
                
     # print("Total Cost = ",actual_dis["J"])
-
-
-visited = []
-queue = PriorityQueue()
-
-Graph_js = Data.GRAPH 
-real_distance =Data.Coordinates
-source ="minuf"
-distnation="tanta"
-get_real_distance(source,distnation,real_distance)
-A_star(visited, queue, real_distance, Graph_js, source,distnation)
