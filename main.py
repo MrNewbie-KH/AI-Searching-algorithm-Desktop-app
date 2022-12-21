@@ -49,10 +49,10 @@ class App(customtkinter.CTk):
         # ============ frame_left ============
 
         #####################################################   from button  ####################################################
-        self.from_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map_from)
+        self.from_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],dynamic_resizing=False,command=self.change_map_from)
         self.from_menu.grid( padx=(20, 20), pady=(10, 0))
         #####################################################   to button     ####################################################
-        self.to_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map_to)
+        self.to_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],dynamic_resizing=False,command=self.change_map_to)
         self.to_menu.grid( padx=(20, 20), pady=(20, 0))
         #####################################################       BFS     ####################################################
 
@@ -94,6 +94,7 @@ class App(customtkinter.CTk):
         self.frame_right.grid_columnconfigure(2, weight=1)
 
         self.map_widget = TkinterMapView(self.frame_right, corner_radius=0)
+        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)  # google normal
         self.map_widget.grid(row=1, rowspan=1, column=0, columnspan=3, sticky="nswe", padx=(0, 0), pady=(0, 0))
 
         # Set default values
