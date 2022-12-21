@@ -1,12 +1,16 @@
 import customtkinter
 from tkintermapview import TkinterMapView
 import aStar
+import DFS
+import BFS
 import Data
+import tkinter
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
 class App(customtkinter.CTk):
+    
 
     APP_NAME = "Mapty"
     WIDTH = 800
@@ -14,7 +18,10 @@ class App(customtkinter.CTk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        photo = tkinter.PhotoImage(file = "lol.ico")
+        self.f=0
+        self.t=0
+        self.iconphoto(False, photo)
         self.title(App.APP_NAME)
         self.geometry(f"{str(App.WIDTH)}x{str(App.HEIGHT)}")
         self.minsize(App.WIDTH, App.HEIGHT)
@@ -41,36 +48,41 @@ class App(customtkinter.CTk):
 
         # ============ frame_left ============
 
-        # self.frame_left.grid_rowconfigure(20, weight=1)
-
-        # from button
-        self.from_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map)
+        #####################################################   from button  ####################################################
+        self.from_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map_from)
         self.from_menu.grid( padx=(20, 20), pady=(10, 0))
-        # to button
-        self.to_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map)
+        #####################################################   to button     ####################################################
+        self.to_menu = customtkinter.CTkOptionMenu(self.frame_left, values=["el shohada","quwaysna","tala","birket as sab", "el-bagour","ashmun", "minuf", "shebin","el sadat city","Kafr El-Zayat","basioun","tanta","qutur","El-Mahalla El-Kubra","As Santah","Samannoud","zefta","banha","qalyub","Al Qanatir Al Khayriyyah","Shubra Al Khaymah","el khankah","kafr shokr","shibin el qanatir","toukh"],command=self.change_map_to)
         self.to_menu.grid( padx=(20, 20), pady=(20, 0))
+        #####################################################       BFS     ####################################################
 
         self.bfs = customtkinter.CTkButton(master=self.frame_left,
                                                 text="BFS",
-                                                command=self.set_marker_event)
+                                                command=self.show_bfs)
         self.bfs.grid(pady=(100, 0), padx=(20, 20))
+
+        #####################################################    DFS     ####################################################
+
 
         self.dfs = customtkinter.CTkButton(master=self.frame_left,
                                                 text="DFS",
-                                                command=self.set_marker_event)
-        self.dfs.grid(pady=(10, 0), padx=(20, 20), row=15, column=0)
+                                                command=self.show_dfs)
+        self.dfs.grid(pady=(10, 0), padx=(20, 20))
+        
+        #####################################################   A*     ####################################################
+
         self.a_star = customtkinter.CTkButton(master=self.frame_left,
                                                 text="A*",
                                                 command=self.show_a_star)
-        self.a_star.grid(pady=(10, 0), padx=(20, 20), row=17, column=0)
+        self.a_star.grid(pady=(10, 0), padx=(20, 20))
 
-        # self.map_label = customtkinter.CTkLabel(self.frame_left, text="Tile Server:", anchor="w")
-        # self.map_label.grid(row=3, column=0, padx=(20, 20), pady=(20, 0))
+        #####################################################   Dark and light mode     ####################################################
+
         
         self.appearance_mode_label = customtkinter.CTkLabel(self.frame_left, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid( padx=(20, 20), pady=(110, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.frame_left, values=["Light", "Dark", "System"],
-                                                                       command=self.change_appearance_mode)
+                                                    command=self.change_appearance_mode)
         self.appearance_mode_optionemenu.grid(padx=(20, 20), pady=(10, 0))
 
         # ============ frame_right ============
@@ -83,17 +95,6 @@ class App(customtkinter.CTk):
 
         self.map_widget = TkinterMapView(self.frame_right, corner_radius=0)
         self.map_widget.grid(row=1, rowspan=1, column=0, columnspan=3, sticky="nswe", padx=(0, 0), pady=(0, 0))
-
-        self.entry = customtkinter.CTkEntry(master=self.frame_right,
-                                            placeholder_text="type address")
-        self.entry.grid(row=0, column=0, sticky="we", padx=(12, 0), pady=12)
-        self.entry.bind("<Return>", self.search_event)
-
-        self.button_5 = customtkinter.CTkButton(master=self.frame_right,
-                                                text="Search",
-                                                width=90,
-                                                command=self.search_event)
-        self.button_5.grid(row=0, column=1, sticky="w", padx=(12, 0), pady=12)
 
         # Set default values
         self.map_widget.set_address("menouf ")
@@ -117,20 +118,50 @@ class App(customtkinter.CTk):
             path_1=[]
             for city in path:
                 path_1.append(Data.Coordinates[city])
+                marker=self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
             self.map_widget.set_path(path_1)
-            self.map_widget.set_marker(path_1[0][0],path_1[0][1])
-            self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
-            # self.map_widget.delete(path_1)
-            #    print( Data.Coordinates[city])
-
+            # self.map_widget.set_marker(path_1[0][0],path_1[0][1])
+            # self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
+    def show_bfs(self):
+        self.map_widget.delete_all_marker()
+        self.map_widget.delete_all_path()
+        if self.from_menu.get()!="From" and  self.to_menu.get()!="To":
+            path=BFS.BFS(self.from_menu.get(),self.to_menu.get())
+            path_1=[]
+            for city in path:
+                path_1.append(Data.Coordinates[city])
+                marker=self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
+            self.map_widget.set_path(path_1)
+            # self.map_widget.set_marker(path_1[0][0],path_1[0][1])
+            # self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
+    def show_dfs(self):
+        self.map_widget.delete_all_marker()
+        self.map_widget.delete_all_path()
+        if self.from_menu.get()!="From" and  self.to_menu.get()!="To":
+            path=DFS.DFS(self.from_menu.get(),self.to_menu.get())
+            path_1=[]
+            for city in path:
+                path_1.append(Data.Coordinates[city])
+                marker=self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
+            self.map_widget.set_path(path_1)
+            # self.map_widget.set_marker(path_1[0][0],path_1[0][1])
+            # self.map_widget.set_marker(path_1[-1][0],path_1[-1][1])
             
 
     def change_appearance_mode(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
-    def change_map(self, new_map: str):
-        # if new_map == "OpenStreetMap":
-            self.map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    # def change_map(self, new_map: str):
+    #     self.map_widget.set_position(Data.Coordinates[self.from_menu.get()][0],Data.Coordinates[self.from_menu.get()][1])
+    #     self.map_widget.set_zoom(15)
+    #     self.map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
+
+    def change_map_from(self, new_map: str):
+        self.map_widget.set_position(Data.Coordinates[self.from_menu.get()][0],Data.Coordinates[self.from_menu.get()][1])
+        self.map_widget.set_zoom(10)
+    def change_map_to(self, new_map: str):
+        self.map_widget.set_position(Data.Coordinates[self.to_menu.get()][0],Data.Coordinates[self.to_menu.get()][1])
+        self.map_widget.set_zoom(10)
 
     def on_closing(self, event=0):
         self.destroy()
