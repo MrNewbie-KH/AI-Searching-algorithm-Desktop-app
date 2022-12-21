@@ -103,13 +103,6 @@ class App(customtkinter.CTk):
         self.to_menu.set("To")
         self.appearance_mode_optionemenu.set("Dark")
 
-    def search_event(self, event=None):
-        self.map_widget.set_address(self.entry.get())
-
-    def set_marker_event(self):
-        current_position = self.map_widget.get_position()
-        self.marker_list.append(self.map_widget.set_marker(current_position[0], current_position[1]))
-
     def show_a_star(self):
         self.map_widget.set_zoom(10)
         self.map_widget.delete_all_marker()
@@ -154,10 +147,6 @@ class App(customtkinter.CTk):
     def change_appearance_mode(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
-    # def change_map(self, new_map: str):
-    #     self.map_widget.set_position(Data.Coordinates[self.from_menu.get()][0],Data.Coordinates[self.from_menu.get()][1])
-    #     self.map_widget.set_zoom(15)
-    #     self.map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png")
 
     def change_map_from(self, new_map: str):
         self.map_widget.set_position(Data.Coordinates[self.from_menu.get()][0],Data.Coordinates[self.from_menu.get()][1])
@@ -165,7 +154,6 @@ class App(customtkinter.CTk):
     def change_map_to(self, new_map: str):
         self.map_widget.set_position(Data.Coordinates[self.to_menu.get()][0],Data.Coordinates[self.to_menu.get()][1])
         self.map_widget.set_zoom(13)
-
     def on_closing(self, event=0):
         self.destroy()
 
