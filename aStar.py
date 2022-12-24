@@ -2,6 +2,7 @@ import json
 from queue import PriorityQueue
 import Data
 import math
+# to get real distance
 def get_real_distance(start , end ,data):
     R = 6371.0710
     x_cord_start,y_cord_start=data[start]
@@ -12,7 +13,7 @@ def get_real_distance(start , end ,data):
     difflon = (y_cord_end-y_cord_start) * (math.pi/180)
     #Great-Circle-Distance Formula Used in Google Maps
     d = 2 * R * math.asin(math.sqrt(math.sin(difflat/2)*math.sin(difflat/2)+math.cos(rlat1)*math.cos(rlat2)*math.sin(difflon/2)*math.sin(difflon/2)))
-    return d
+    return d 
 
 def A_star( src, dist):
     visited = []
